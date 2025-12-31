@@ -9,12 +9,12 @@ import (
 	"github.com/umisto/restkit/token"
 )
 
-func SystemRoleGrant(ctxKey interface{}, allowedRoles map[string]bool) func(http.Handler) http.Handler {
+func (s Service) SystemRoleGrant(allowedRoles map[string]bool) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx := r.Context()
 
-			user, ok := ctx.Value(ctxKey).(token.AccountData)
+			user, ok := ctx.Value(s.ctxKey).(token.AccountData)
 			if !ok {
 				ape.RenderErr(w,
 					problems.Unauthorized("Missing AuthorizationHeader header"),
