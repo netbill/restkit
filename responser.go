@@ -18,13 +18,17 @@ func NewResponser() *Responser {
 	return &Responser{}
 }
 
-func (r *Responser) Render(w http.ResponseWriter, status int, res ...interface{}) {
+func (r *Responser) Status(w http.ResponseWriter, status int) {
+	w.Header().Set("Content-Type", jsonapi.MediaType)
+	w.WriteHeader(status)
+}
+
+func (r *Responser) Render(w http.ResponseWriter, status int, res interface{}) {
 	w.Header().Set("content-type", jsonapi.MediaType)
 	w.WriteHeader(status)
 
-	if res != nil && len(res) > 0 {
-		err := json.NewEncoder(w).Encode(res)
-		if err != nil {
+	if res != nil {
+		if err := json.NewEncoder(w).Encode(res); err != nil {
 			panic(fmt.Errorf("failed to render response %w", err))
 		}
 	}
