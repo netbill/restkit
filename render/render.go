@@ -1,4 +1,4 @@
-package restkit
+package render
 
 import (
 	"encoding/json"
@@ -11,20 +11,8 @@ import (
 	"github.com/google/jsonapi"
 )
 
-type Responser struct {
-}
-
-func NewResponser() *Responser {
-	return &Responser{}
-}
-
-func (r *Responser) Status(w http.ResponseWriter, status int) {
+func Response(w http.ResponseWriter, status int, res interface{}) {
 	w.Header().Set("Content-Type", jsonapi.MediaType)
-	w.WriteHeader(status)
-}
-
-func (r *Responser) Render(w http.ResponseWriter, status int, res interface{}) {
-	w.Header().Set("content-type", jsonapi.MediaType)
 	w.WriteHeader(status)
 
 	if res != nil {
@@ -34,7 +22,7 @@ func (r *Responser) Render(w http.ResponseWriter, status int, res interface{}) {
 	}
 }
 
-func (r *Responser) RenderErr(w http.ResponseWriter, errs ...error) {
+func ResponseError(w http.ResponseWriter, errs ...error) {
 	if len(errs) == 0 {
 		panic("expected non-empty errors slice")
 	}
